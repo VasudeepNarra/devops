@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en-US" class="is-fullheight">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="shortcut icon" href="https://www.aquasec.com/wp-content/themes/aqua3/favicon.ico" />
+<link rel="icon" type="image/png" href="https://www.aquasec.com/wp-content/themes/aqua3/favicon_192x192.png" sizes="192x192" />
+<link rel="apple-touch-icon" sizes="180x180" href="https://www.aquasec.com/wp-content/themes/aqua3/apple-touch-icon-180x180.png" />
+<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+
+	<!-- This site is optimized with the Yoast SEO plugin v16.5 - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>Kubernetes Architecture | Aqua</title>
+	<meta name="description" content="Learn about Kubernetes Architecture, components, and design principles and see a sample installation and setup procedure." />
+	<link rel="canonical" href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-architecture/" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Kubernetes Architecture | Aqua" />
+	<meta property="og:description" content="Learn about Kubernetes Architecture, components, and design principles and see a sample installation and setup procedure." />
+	<meta property="og:url" content="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-architecture/" />
+	<meta property="og:site_name" content="Aqua" />
+	<meta property="article:modified_time" content="2021-01-04T09:24:55+00:00" />
+	<meta property="og:image" content="http://www.aquasec.com/wp-content/uploads/2020/11/Kubernetes-101-Architecture-Diagram.jpg" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:label1" content="Est. reading time" />
+	<meta name="twitter:data1" content="13 minutes" />
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://www.aquasec.com/#website","url":"https://www.aquasec.com/","name":"Aqua","description":"Cloud Native Security, Container Security &amp; Serverless Security","potentialAction":[{"@type":"SearchAction","target":"https://www.aquasec.com/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-architecture/#primaryimage","inLanguage":"en-US","url":"http://www.aquasec.com/wp-content/uploads/2020/11/Kubernetes-101-Architecture-Diagram.jpg","contentUrl":"http://www.aquasec.com/wp-content/uploads/2020/11/Kubernetes-101-Architecture-Diagram.jpg"},{"@type":"WebPage","@id":"https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-architecture/#webpage","url":"https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-architecture/","name":"Kubernetes Architecture | Aqua","isPartOf":{"@id":"https://www.aquasec.com/#website"},"primaryImageOfPage":{"@id":"https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-architecture/#primaryimage"},"datePublished":"2020-11-17T15:37:47+00:00","dateModified":"2021-01-04T09:24:55+00:00","description":"Learn about Kubernetes Architecture, components, and design principles and see a sample installation and setup procedure.","breadcrumb":{"@id":"https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-architecture/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-architecture/"]}]},{"@type":"BreadcrumbList","@id":"https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-architecture/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.aquasec.com/"},{"@type":"ListItem","position":2,"name":"Kubernetes","item":"http://www.aquasec.com/cloud-native-academy/kubernetes-101/"},{"@type":"ListItem","position":3,"name":"Kubernetes Architecture"}]}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel='stylesheet' id='wp-block-library-css'  href='https://www.aquasec.com/wp-includes/css/dist/block-library/style.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='main-style-css'  href='https://www.aquasec.com/wp-content/themes/aqua3/css/aqua3.min.css?ver=1.0.329' type='text/css' media='all' />
+<script type='text/javascript' src='https://www.aquasec.com/wp-content/themes/aqua3/js/aqua3.js?ver=1.0.329' id='aqua3-js'></script>
+<noscript><style id="rocket-lazyload-nojs-css">.rll-youtube-player, [data-lazy-src]{display:none !important;}</style></noscript><meta name="msvalidate.01" content="EB7D71A4041DC995BE2F2C787A9183FD" />
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5N9T3H');</script>
+<!-- End Google Tag Manager -->
+</head>
+
+<body class="academy-template-default single single-academy postid-6222">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5N9T3H" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+				
+<div id="page-6222" class="single-academy-alternative post-6222 academy type-academy status-publish hentry">
+
+
+
+<!-- header starts -->
+
+	<div class="acd_header_navbar_wrap">
+
+		<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+		<div class="container is-fluid">
+
+				<div class="navbar-brand">
+					
+					<a role="button" class="navbar-burger side_navigation_burger">
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+					</a>
+
+					<a class="navbar-item logo" href="https://www.aquasec.com" title="Aqua Cloud Native Academy">Aqua Cloud Native Academy</a>
+
+									</div><!-- navbar-brand -->
+
+				<div id="acd-navbar-menu" class="navbar-menu is-hidden-mobile">
+					<div class="navbar-start">
+											</div><!-- navbar-start -->
+
+					<div class="navbar-end">
+						
+											</div><!-- navbar-end -->
+				</div><!-- navbar-menu -->
+			</div><!-- container -->
+			</nav>
+
+
+	</div><!-- acd_header_navbar_wrap -->
+
+
+	<div class="side_navigation_wrap">
+
+		<div class="acd_sidebar_menu_wrap">
+			<ul class="sidebar_menu menu-list">
+			<li class="page_item page-item-7443 page_item_has_children"><a href="https://www.aquasec.com/cloud-native-academy/devsecops/">DevSecOps</a>
+<ul class='children'>
+	<li class="page_item page-item-7607"><a href="https://www.aquasec.com/cloud-native-academy/devsecops/shift-left-devops/">Shift Left DevOps</a></li>
+	<li class="page_item page-item-7445"><a href="https://www.aquasec.com/cloud-native-academy/devsecops/application-security/">Application Security</a></li>
+	<li class="page_item page-item-7444"><a href="https://www.aquasec.com/cloud-native-academy/devsecops/devops-tools/">DevOps Tools</a></li>
+	<li class="page_item page-item-7441"><a href="https://www.aquasec.com/cloud-native-academy/devsecops/devsecops-tools/">DevSecOps Tools</a></li>
+</ul>
+</li>
+<li class="page_item page-item-6865 page_item_has_children"><a href="https://www.aquasec.com/cloud-native-academy/cloud-native-applications/">Cloud Native Applications</a>
+<ul class='children'>
+	<li class="page_item page-item-7374"><a href="https://www.aquasec.com/cloud-native-academy/cloud-native-applications/microservices-security/">Microservices Security</a></li>
+	<li class="page_item page-item-7025"><a href="https://www.aquasec.com/cloud-native-academy/cloud-native-applications/cloud-native-infrastructure/">Cloud Native Infrastructure</a></li>
+	<li class="page_item page-item-6875"><a href="https://www.aquasec.com/cloud-native-academy/cloud-native-applications/cloud-native-applications-101/">Cloud Native Applications</a></li>
+	<li class="page_item page-item-6863"><a href="https://www.aquasec.com/cloud-native-academy/cloud-native-applications/open-policy-agent-authorization-in-a-cloud-native-world/">Open Policy Agent</a></li>
+</ul>
+</li>
+<li class="page_item page-item-6839 page_item_has_children"><a href="https://www.aquasec.com/cloud-native-academy/serverless-architecture/">Serverless Architecture</a>
+<ul class='children'>
+	<li class="page_item page-item-6837"><a href="https://www.aquasec.com/cloud-native-academy/serverless-architecture/serverless-vs-containers-choose-one-or-use-both/">Serverless vs Containers</a></li>
+	<li class="page_item page-item-6691"><a href="https://www.aquasec.com/cloud-native-academy/serverless-architecture/serverless-architecture-platforms-benefits-best-practices/">Serverless Architecture</a></li>
+</ul>
+</li>
+<li class="page_item page-item-6607 page_item_has_children"><a href="https://www.aquasec.com/cloud-native-academy/container-platforms/">Container Platforms</a>
+<ul class='children'>
+	<li class="page_item page-item-6814"><a href="https://www.aquasec.com/cloud-native-academy/container-platforms/container-platforms-6-best-practices-and-15-top-solutions/">Container Platforms</a></li>
+	<li class="page_item page-item-6610"><a href="https://www.aquasec.com/cloud-native-academy/container-platforms/azure-openshift/">Azure OpenShift</a></li>
+	<li class="page_item page-item-6597"><a href="https://www.aquasec.com/cloud-native-academy/container-platforms/aws-containers-the-basics-and-how-to-secure-containers-on-amazon/">AWS Containers</a></li>
+	<li class="page_item page-item-7419"><a href="https://www.aquasec.com/cloud-native-academy/container-platforms/container-as-a-service/">Container as a Service</a></li>
+</ul>
+</li>
+<li class="page_item page-item-6506 page_item_has_children"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-in-production/">Kubernetes in Production</a>
+<ul class='children'>
+	<li class="page_item page-item-6885"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-in-production/kubernetes-cis-benchmark-best-practices-in-brief/">Kubernetes CIS Benchmark</a></li>
+	<li class="page_item page-item-6518"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-in-production/kubernetes-security-best-practices-10-steps-to-securing-k8s/">Kubernetes Security Best Practices</a></li>
+	<li class="page_item page-item-6500"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-in-production/kubernetes-in-production-what-you-should-know/">Kubernetes in Production</a></li>
+	<li class="page_item page-item-6343"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-in-production/eks-security-2/">EKS Security</a></li>
+	<li class="page_item page-item-6342"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-in-production/kspm-kubernetes-security-posture-management-2/">KSPM: Kubernetes Security Posture Management</a></li>
+	<li class="page_item page-item-6341"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-in-production/kubernetes-secrets-2/">Kubernetes Secrets</a></li>
+</ul>
+</li>
+<li class="page_item page-item-6394 page_item_has_children"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/">Docker Container</a>
+<ul class='children'>
+	<li class="page_item page-item-7498"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/container-cloud-computing/">Container Cloud Computing</a></li>
+	<li class="page_item page-item-7438"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/container-devops/">Container DevOps</a></li>
+	<li class="page_item page-item-7375"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/container-advantages/">Container Advantages</a></li>
+	<li class="page_item page-item-7293"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/container-monitoring/">Container Monitoring</a></li>
+	<li class="page_item page-item-6880"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/docker-cis-benchmark/">Docker CIS Benchmark</a></li>
+	<li class="page_item page-item-6879"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/docker-in-production-getting-it-right/">Docker in Production</a></li>
+	<li class="page_item page-item-6568"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/registry-scanning/">Registry Scanning</a></li>
+	<li class="page_item page-item-6566"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/seccomp/">Seccomp</a></li>
+	<li class="page_item page-item-6564"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/docker-alpine/">Docker Alpine</a></li>
+	<li class="page_item page-item-6562"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/docker-api/">Docker API</a></li>
+	<li class="page_item page-item-6560"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/docker-tools/">Docker Tools</a></li>
+	<li class="page_item page-item-6454"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/100-best-docker-tutorials/">100 Best Docker Tutorials</a></li>
+	<li class="page_item page-item-6445"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/docker-alternatives/">Docker Alternatives</a></li>
+	<li class="page_item page-item-6439"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/docker-swarm/">Docker Swarm</a></li>
+	<li class="page_item page-item-6434"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/docker-containers-vs-virtual-machines/">Docker Containers vs. Virtual Machines</a></li>
+	<li class="page_item page-item-6425"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/docker-architecture/">Docker Architecture</a></li>
+	<li class="page_item page-item-6411"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/docker-networking/">Docker Networking</a></li>
+	<li class="page_item page-item-6400"><a href="https://www.aquasec.com/cloud-native-academy/docker-container/docker-registry/">Docker Registries</a></li>
+</ul>
+</li>
+<li class="page_item page-item-6365 page_item_has_children current_page_ancestor current_page_parent"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/">Kubernetes</a>
+<ul class='children'>
+	<li class="page_item page-item-7447"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-cluster/">Kubernetes Cluster</a></li>
+	<li class="page_item page-item-7435"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-as-a-service/">Kubernetes as a Service</a></li>
+	<li class="page_item page-item-7365"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-vulnerability-scanning/">Kubernetes Vulnerability Scanning</a></li>
+	<li class="page_item page-item-7363"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-alternatives/">Kubernetes Alternatives</a></li>
+	<li class="page_item page-item-6834"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-vmware/">Kubernetes on VMware</a></li>
+	<li class="page_item page-item-6550"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-serverless/">Kubernetes Serverless</a></li>
+	<li class="page_item page-item-6548"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-benchmark/">Kubernetes Benchmark</a></li>
+	<li class="page_item page-item-6546"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-pods/">Kubernetes Pods</a></li>
+	<li class="page_item page-item-6354"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-services/">Kubernetes Services</a></li>
+	<li class="page_item page-item-6340"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-security/">Kubernetes Security</a></li>
+	<li class="page_item page-item-6336"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-on-aws/">Kubernetes on AWS</a></li>
+	<li class="page_item page-item-6294"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-management/">Kubernetes Management</a></li>
+	<li class="page_item page-item-6290"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-helm/">Kubernetes Helm</a></li>
+	<li class="page_item page-item-6233"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-tutorials/">Kubernetes Tutorials</a></li>
+	<li class="page_item page-item-6254"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-networking/">Kubernetes Networking</a></li>
+	<li class="page_item page-item-6222 current_page_item"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-architecture/" aria-current="page">Kubernetes Architecture</a></li>
+	<li class="page_item page-item-6189"><a href="https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-complete-guide/">Kubernetes</a></li>
+</ul>
+</li>
+<li class="page_item page-item-6348 page_item_has_children"><a href="https://www.aquasec.com/cloud-native-academy/container-security/">Containerized Architecture</a>
+<ul class='children'>
+	<li class="page_item page-item-7231"><a href="https://www.aquasec.com/cloud-native-academy/container-security/container-images/">Container Images</a></li>
+	<li class="page_item page-item-7124"><a href="https://www.aquasec.com/cloud-native-academy/container-security/containerized-architecture/">Containerized Architecture</a></li>
+	<li class="page_item page-item-7121"><a href="https://www.aquasec.com/cloud-native-academy/container-security/container-compliance/">Container Compliance</a></li>
+	<li class="page_item page-item-6542"><a href="https://www.aquasec.com/cloud-native-academy/container-security/docker-secrets/">Docker Secrets</a></li>
+	<li class="page_item page-item-6540"><a href="https://www.aquasec.com/cloud-native-academy/container-security/docker-security-best-practices/">Docker Security Best Practices</a></li>
+	<li class="page_item page-item-6351"><a href="https://www.aquasec.com/cloud-native-academy/container-security/ecs-security/">ECS Security</a></li>
+	<li class="page_item page-item-6350"><a href="https://www.aquasec.com/cloud-native-academy/container-security/istio-security/">Istio security</a></li>
+	<li class="page_item page-item-6349"><a href="https://www.aquasec.com/cloud-native-academy/container-security/runc/">runC</a></li>
+</ul>
+</li>
+<li class="page_item page-item-6346 page_item_has_children"><a href="https://www.aquasec.com/cloud-native-academy/vulnerability-management/">Vulnerability Management</a>
+<ul class='children'>
+	<li class="page_item page-item-7440"><a href="https://www.aquasec.com/cloud-native-academy/vulnerability-management/vulnerability-scanning-process/">Vulnerability Scanning Process</a></li>
+	<li class="page_item page-item-7127"><a href="https://www.aquasec.com/cloud-native-academy/vulnerability-management/vulnerability-management/">Vulnerability Management</a></li>
+	<li class="page_item page-item-6841"><a href="https://www.aquasec.com/cloud-native-academy/vulnerability-management/open-source-vulnerability-scanning/">Open Source Vulnerability Scanning</a></li>
+	<li class="page_item page-item-6345"><a href="https://www.aquasec.com/cloud-native-academy/vulnerability-management/trivy/">Trivy</a></li>
+</ul>
+</li>
+<li class="page_item page-item-6180 page_item_has_children"><a href="https://www.aquasec.com/cloud-native-academy/cspm/">Cloud Security</a>
+<ul class='children'>
+	<li class="page_item page-item-7288"><a href="https://www.aquasec.com/cloud-native-academy/cspm/google-cloud-security/">Google Cloud Security</a></li>
+	<li class="page_item page-item-7172"><a href="https://www.aquasec.com/cloud-native-academy/cspm/aws-cloud-security/">AWS Cloud Security</a></li>
+	<li class="page_item page-item-7142"><a href="https://www.aquasec.com/cloud-native-academy/cspm/multi-cloud-security/">Multi Cloud Security</a></li>
+	<li class="page_item page-item-7169"><a href="https://www.aquasec.com/cloud-native-academy/cspm/cloud-infrastructure-security/">Cloud Infrastructure Security</a></li>
+	<li class="page_item page-item-7143"><a href="https://www.aquasec.com/cloud-native-academy/cspm/cloud-security-scanner/">Cloud Security Scanner</a></li>
+	<li class="page_item page-item-7164"><a href="https://www.aquasec.com/cloud-native-academy/cspm/cloud-security/">Cloud Security</a></li>
+	<li class="page_item page-item-7141"><a href="https://www.aquasec.com/cloud-native-academy/cspm/azure-cloud-security/">Azure Cloud Security</a></li>
+	<li class="page_item page-item-6744"><a href="https://www.aquasec.com/cloud-native-academy/cspm/cloud-security-solutions-cwpp-cspm-casb-and-more/">Cloud Security Solutions</a></li>
+	<li class="page_item page-item-6556"><a href="https://www.aquasec.com/cloud-native-academy/cspm/cloud-workload-protection-platform-cwpp/">Cloud Workload Protection Platform (CWPP)</a></li>
+	<li class="page_item page-item-6160"><a href="https://www.aquasec.com/cloud-native-academy/cspm/hybrid-cloud-security/">Hybrid Cloud Security</a></li>
+</ul>
+</li>
+			</ul>
+		</div>
+	</div><!-- side_navigation_wrap -->
+
+	<div class="main_content_wrap">
+				<div class="section acd_header_title_wrap anima*table">
+			<div class="header_title_content_wrap">
+				<h1 class="title page_title is-spaced fadeInUp">Kubernetes Architecture</h1>
+									<h2 class="subtitle page_subtitle fadeInUp animationDelay_1">Learn about Kubernetes Architecture, components, and design principles and see a sample installation and setup procedure.</h2>
+							</div>
+		</div><!-- header_title_wrap -->
+
+
+		<div class="columns is-multiline is-marginless">
+			<div class="column is-10-fullhd is-9-widescreen is-12-desktop is-12-tablet main_content_column">
+				
+			
+				<div class="section content_wrap fadeInUp animationDelay_3">
+					<div class="container">
+						<div class="content">
+							
+<p>In this page, you&#8217;ll learn everything you need to know about Kubernetes Architecture:</p>
+
+
+
+<ul class="listoftaglinks"><li><a href="#kubernetes-architecture">Kubernetes Architecture</a></li><li><a href="https://www.aquasec.com/wp-admin/post.php?post=6222&amp;action=edit#what-is-kubernetes">What is Kubernetes?</a></li><li><a href="#kubernetes-components-architecture">Kubernetes Components and Architecture</a></li><li><a href="#kubernetes-concepts">Kubernetes Concepts</a></li><li><a href="#kubernetes-design-principles">Kubernetes Design Principles</a></li><li><a href="#sample-installation-setup">Sample Installation and Setup of Kubernetes</a></li><li><a href="#summary">Summary</a></li></ul>
+
+
+
+<h2 id="what-is-kubernetes">What is Kubernetes?</h2>
+
+
+
+<p>Kubernetes is an open source orchestration tool developed by Google for managing microservices or containerized applications across a distributed cluster of nodes. Kubernetes provides highly resilient infrastructure with zero downtime deployment capabilities, automatic rollback, scaling, and self-healing of containers (which consists of auto-placement, auto-restart, auto-replication , and scaling of containers on the basis of CPU usage).</p>
+
+
+
+<p>The main objective of Kubernetes is to hide the complexity of managing a fleet of containers by providing REST APIs for the required functionalities. Kubernetes is portable in nature, meaning it can run on various public or private cloud platforms such as AWS, Azure, OpenStack, or Apache Mesos. It can also run on bare metal machines.</p>
+
+
+
+<p>For further reading, see Kubernetes Documentation: <a href="https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/" target="_blank" rel="noreferrer noopener"><strong>Why Containers ›</strong></a></p>
+
+
+
+<h2 id="kubernetes-components-architecture">Kubernetes Components and Architecture</h2>
+
+
+
+<p>Kubernetes follows a client-server architecture. It’s possible to have a multi-master setup (for high availability), but by default there is a single master server which acts as a controlling node and point of contact. The master server consists of various components including a kube-apiserver, an etcd storage, a kube-controller-manager, a cloud-controller-manager, a kube-scheduler, and a DNS server for Kubernetes services. Node components include kubelet and kube-proxy on top of <a href="https://wiki.aquasec.com/display/containers/Docker+Containers" target="_blank" rel="noreferrer noopener">Docker</a>.</p>
+
+
+
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large is-resized"><img loading="lazy" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20595%20430'%3E%3C/svg%3E" alt="" class="wp-image-6223" width="595" height="430" data-lazy-srcset="https://www.aquasec.com/wp-content/uploads/2020/11/Kubernetes-101-Architecture-Diagram.jpg 793w, https://www.aquasec.com/wp-content/uploads/2020/11/Kubernetes-101-Architecture-Diagram-300x217.jpg 300w, https://www.aquasec.com/wp-content/uploads/2020/11/Kubernetes-101-Architecture-Diagram-768x555.jpg 768w, https://www.aquasec.com/wp-content/uploads/2020/11/Kubernetes-101-Architecture-Diagram-140x101.jpg 140w" data-lazy-sizes="(max-width: 595px) 100vw, 595px" data-lazy-src="https://www.aquasec.com/wp-content/uploads/2020/11/Kubernetes-101-Architecture-Diagram.jpg" /><noscript><img loading="lazy" src="http://www.aquasec.com/wp-content/uploads/2020/11/Kubernetes-101-Architecture-Diagram.jpg" alt="" class="wp-image-6223" width="595" height="430" srcset="https://www.aquasec.com/wp-content/uploads/2020/11/Kubernetes-101-Architecture-Diagram.jpg 793w, https://www.aquasec.com/wp-content/uploads/2020/11/Kubernetes-101-Architecture-Diagram-300x217.jpg 300w, https://www.aquasec.com/wp-content/uploads/2020/11/Kubernetes-101-Architecture-Diagram-768x555.jpg 768w, https://www.aquasec.com/wp-content/uploads/2020/11/Kubernetes-101-Architecture-Diagram-140x101.jpg 140w" sizes="(max-width: 595px) 100vw, 595px" /></noscript><figcaption>High level Kubernetes architecture diagram showing a cluster with a master and two worker nodes<br><em>(<a href="https://x-team.com/blog/introduction-kubernetes-architectur" target="_blank" rel="noreferrer noopener">Image Source</a></em>)</figcaption></figure></div>
+
+
+
+<h3>Master Components</h3>
+
+
+
+<p>Below are the main components found on the master node:</p>
+
+
+
+<ul><li><a href="https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/" target="_blank" rel="noreferrer noopener"><strong>etcd cluster</strong></a> &#8211; a simple, distributed key value storage which is used to store the Kubernetes cluster data (such as number of pods, their state, namespace, etc), API objects and service discovery details. It is only accessible from the API server for security reasons. etcd enables notifications to the cluster about configuration changes with the help of watchers. Notifications are API requests on each etcd cluster node to trigger the update of information in the node’s storage.</li><li><a href="https://kubernetes.io/docs/reference/generated/kube-apiserver/" target="_blank" rel="noreferrer noopener"><strong>kube-apiserver</strong></a> &#8211; Kubernetes API server is the central management entity that receives all REST requests for modifications (to pods, services, replication sets/controllers and others), serving as frontend to the cluster. Also, this is the only component that communicates with the etcd cluster, making sure data is stored in etcd and is in agreement with the service details of the deployed pods.</li><li><strong><a href="https://kubernetes.io/docs/reference/generated/kube-controller-manager/" target="_blank" rel="noreferrer noopener">kube-controller-manager</a></strong> &#8211; runs a number of distinct controller processes in the background (for example, replication controller controls number of replicas in a pod, endpoints controller populates endpoint objects like services and pods, and others) to regulate the shared state of the cluster and perform routine tasks. When a change in a service configuration occurs (for example, replacing the image from which the pods are running, or changing parameters in the configuration yaml file), the controller spots the change and starts working towards the new desired state.</li><li><a href="https://kubernetes.io/docs/concepts/overview/components/#cloud-controller-manager" target="_blank" rel="noreferrer noopener"><strong>cloud-controller-manager</strong></a> &#8211; is responsible for managing controller processes with dependencies on the underlying cloud provider (if applicable). For example, when a controller needs to check if a node was terminated or set up routes, load balancers or volumes in the cloud infrastructure, all that is handled by the cloud-controller-manager.</li><li><strong><a href="https://kubernetes.io/docs/reference/generated/kube-scheduler/" target="_blank" rel="noreferrer noopener">kube-scheduler</a></strong> &#8211; helps schedule the pods (a co-located group of containers inside which our application processes are running) on the various nodes based on resource utilization. It reads the service’s operational requirements and schedules it on the best fit node. For example, if the application needs 1GB of memory and 2 CPU cores, then the pods for that application will be scheduled on a node with at least those resources. The scheduler runs each time there is a need to schedule pods. The scheduler must know the total resources available as well as resources allocated to existing workloads on each node.</li></ul>
+
+
+
+<h3>Node (worker) components</h3>
+
+
+
+<p>Below are the main components found on a (worker) node:</p>
+
+
+
+<ul><li><strong><a href="https://kubernetes.io/docs/reference/generated/kubelet/" target="_blank" rel="noreferrer noopener">kubelet</a></strong> &#8211; the main service on a node, regularly taking in new or modified pod specifications (primarily through the kube-apiserver) and ensuring that pods and their containers are healthy and running in the desired state. This component also reports to the master on the health of the host where it is running.</li><li><strong><a href="https://kubernetes.io/docs/reference/generated/kube-proxy/" target="_blank" rel="noreferrer noopener">kube-proxy</a></strong> &#8211; a proxy service that runs on each worker node to deal with individual host subnetting and expose services to the external world. It performs request forwarding to the correct pods/containers across the various isolated networks in a cluster.</li></ul>
+
+
+
+<h3>Kubectl</h3>
+
+
+
+<p><strong><a href="https://kubernetes.io/docs/reference/kubectl/overview/" target="_blank" rel="noreferrer noopener">kubectl</a></strong> command is a line tool that interacts with kube-apiserver and send commands to the master node. Each command is converted into an API call.</p>
+
+
+
+<p>For further reading, see Kubernetes Documentation: <strong><a href="https://kubernetes.io/docs/concepts/overview/components/" target="_blank" rel="noreferrer noopener">Kubernetes Components ›</a></strong></p>
+
+
+
+<h2 id="kubernetes-concepts">Kubernetes Concepts</h2>
+
+
+
+<p>Making use of Kubernetes requires understanding the different abstractions it uses to represent the state of the system, such as services, pods, volumes, namespaces, and deployments.</p>
+
+
+
+<ul><li><strong><a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/" target="_blank" rel="noreferrer noopener">Pod</a></strong> &#8211; generally refers to one or more containers that should be controlled as a single application. A pod encapsulates application containers, storage resources, a unique network ID and other configuration on how to run the containers.</li><li><strong><a href="https://kubernetes.io/docs/concepts/services-networking/service/" target="_blank" rel="noreferrer noopener">Service</a></strong> &#8211; pods are volatile, that is Kubernetes does not guarantee a given physical pod will be kept alive (for instance, the replication controller might kill and start a new set of pods). Instead, a service represents a logical set of pods and acts as a gateway, allowing (client) pods to send requests to the service without needing to keep track of which physical pods actually make up the service.</li><li><strong><a href="https://kubernetes.io/docs/concepts/storage/volumes/" target="_blank" rel="noreferrer noopener">Volume</a></strong> &#8211; similar to a container volume in Docker, but a Kubernetes volume applies to a whole pod and is mounted on all containers in the pod. Kubernetes guarantees data is preserved across container restarts. The volume will be removed only when the pod gets destroyed. Also, a pod can have multiple volumes (possibly of different types) associated.</li><li><strong><a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/" target="_blank" rel="noreferrer noopener">Namespace</a></strong> &#8211; a virtual cluster (a single physical cluster can run multiple virtual ones) intended for environments with many users spread across multiple teams or projects, for isolation of concerns. Resources inside a namespace must be unique and cannot access resources in a different namespace. Also, a namespace can be allocated a <a href="https://kubernetes.io/docs/concepts/policy/resource-quotas/" target="_blank" rel="noreferrer noopener">resource quota</a> to avoid consuming more than its share of the physical cluster’s overall resources.</li><li><strong><a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/" target="_blank" rel="noreferrer noopener">Deployment</a></strong> &#8211; describes the desired state of a pod or a replica set, in a yaml file. The deployment controller then gradually updates the environment (for example, creating or deleting replicas) until the current state matches the desired state specified in the deployment file. For example, if the yaml file defines 2 replicas for a pod but only one is currently running, an extra one will get created. Note that replicas managed via a deployment should not be manipulated directly, only via new deployments.</li></ul>
+
+
+
+<p>For further reading, see Kubernetes Documentation:<strong> </strong><a href="https://kubernetes.io/docs/concepts/"><strong>Kubernetes Concepts</strong> <strong>›</strong></a></p>
+
+
+
+<h2 id="kubernetes-design-principles">Kubernetes Design Principles</h2>
+
+
+
+<p>Kubernetes was designed to support the features required by highly available distributed systems, such as (auto-)scaling, high availability, security and portability.</p>
+
+
+
+<ul><li><strong>Scalability</strong> &#8211; Kubernetes provides horizontal scaling of pods on the basis of CPU utilization. The threshold for CPU usage is configurable and Kubernetes will automatically start new pods if the threshold is reached. For example, if the threshold is 70% for CPU but the application is actually growing up to 220%, then eventually 3 more pods will be deployed so that the average CPU utilization is back under 70%. When there are multiple pods for a particular application, Kubernetes provides the load balancing capacity across them. Kubernetes also supports horizontal scaling of stateful pods, including NoSQL and RDBMS databases through Stateful sets. A Stateful set is a similar concept to a Deployment, but ensures storage is persistent and stable, even when a pod is removed.</li><li><strong>High Availability</strong> &#8211; Kubernetes addresses highly availability both at application and infrastructure level. Replica sets ensure that the desired (minimum) number of replicas of a stateless pod for a given application are running. Stateful sets perform the same role for stateful pods. At the infrastructure level, Kubernetes supports various distributed storage backends like AWS EBS, Azure Disk, Google Persistent Disk, NFS, and more. Adding a reliable, available storage layer to Kubernetes ensures high availability of stateful workloads. Also, each of the master components can be configured for multi-node replication (multi-master) to ensure higher availability.</li><li><strong>Security</strong> &#8211; <a href="https://wiki.aquasec.com/display/containers/Kubernetes+Security" target="_blank" rel="noreferrer noopener">Kubernetes</a> addresses security at multiple levels: cluster, application and network. The API endpoints are secured through transport layer security (TLS). Only authenticated users (either service accounts or regular users) can execute operations on the cluster (via API requests). At the application level, Kubernetes secrets can store sensitive information (such as passwords or tokens) per cluster (a virtual cluster if using namespaces, physical otherwise). Note that secrets are accessible from any pod in the same cluster. Network policies for access to pods can be defined in a deployment. A network policy specifies how pods are allowed to communicate with each other and with other network endpoints.</li><li><strong>Portability</strong> &#8211; Kubernetes portability manifests in terms of operating system choices (a cluster can run on any mainstream Linux distribution), processor architectures (either virtual machines or bare metal), cloud providers (AWS, Azure or Google Cloud Platform), and new container runtimes, besides Docker, can also be added. Through the concept of federation, it can also support workloads across hybrid (private and public cloud) or multi-cloud environments. This also supports availability zone fault tolerance within a single cloud provider.</li></ul>
+
+
+
+<p>For further reading, see Kubernetes Documentation: <strong><a href="An Overview ›" target="_blank" rel="noreferrer noopener">Kubernetes: An Overview ›</a></strong></p>
+
+
+
+<h2 id="sample-installation-setup">Sample Installation and Setup of Kubernetes</h2>
+
+
+
+<p>Note: In this example, from X-Team’s <a href="https://x-team.com/blog/introduction-kubernetes-architecture/" target="_blank" rel="noreferrer noopener">Introduction to Kubernetes Architecture</a> , all the components are installed inside a single docker container, acting as both master and worker node. This is solely for demonstration purposes.</p>
+
+
+
+<h3>Installing Kubernetes</h3>
+
+
+
+<ol><li>Set the K8S_VERSION env variable to the latest stable Kubernetes release, for later retrieval:</li></ol>
+
+
+
+<pre class="wp-block-code"><code>export K8S_VERSION=$(curl -sS https://storage.googleapis.com/kubernetes-release/release/stable.txt)</code></pre>
+
+
+
+<ol start="2"><li>Assuming the host’s architecture is amd64, set the ARCH env variable:</li></ol>
+
+
+
+<pre class="wp-block-code"><code>export ARCH=amd64</code></pre>
+
+
+
+<ol start="3"><li>Run the <code>hypercube</code> Docker container, which itself takes care of installing all the Kubernetes components. It requires special privileges, which are explained below.</li></ol>
+
+
+
+<pre class="wp-block-code"><code>docker run -d --volume=/:/rootfs:ro \
+--volume=/sys:/sys:rw --volume=/var/lib/docker/:/var/lib/docker:rw \
+--volume=/var/lib/kubelet/:/var/lib/kubelet:rw --volume=/var/run:/var/run:rw \
+--net=host --pid=host --name=hyperkube-installer \
+--privileged gcr.io/google_containers/hyperkube-${ARCH}:${K8S_VERSION}\
+/hyperkube kubelet --containerized \
+--hostname-override=127.0.0.1 --api-servers=http://localhost:8080 \
+--config=/etc/kubernetes/manifests --allow-privileged --v=2</code></pre>
+
+
+
+<ol start="4"><li>Run the command <code>docker ps</code> to see all the running containers started by hypercube, for example a container created with the command <code>"/hyperkube apiserver"</code>.</li></ol>
+
+
+
+<p>The volume parameters are required to mount and give access to the host’s&nbsp;<code>/root&nbsp;</code>,&nbsp;<code>/sys&nbsp;</code>,&nbsp;<code>/var/run&nbsp;</code>and&nbsp;<code>/var/lib/docker&nbsp;</code>filesystems inside the container instance. The&nbsp;<code>--privileged&nbsp;</code>option grants access to all devices of the host, namely to start new containers. Parameters&nbsp;<code>--net=host</code>&nbsp;and&nbsp;<code>--pid=host</code>&nbsp;allow access to the network and PID namespace of the host.</p>
+
+
+
+<p><code>hypercube's</code> Docker image is available from Google’s Container Registry (GCR), we use ARCH and K8S_VERSION env variables to construct the full path to the image that fits our environment: </p>
+
+
+
+<pre class="wp-block-code"><code>gcr.io/google_containers/hyperkube-${ARCH}:${K8S_VERSION}</code></pre>
+
+
+
+<h3>Deploying Pods</h3>
+
+
+
+<ol><li>Start a bash shell inside the hypercube container:</li></ol>
+
+
+
+<pre class="wp-block-code"><code>docker exec -it hyperkube-installer /bin/bash</code></pre>
+
+
+
+<ol start="2"><li>Export the Kubernetes version and processor architecture inside the container:</li></ol>
+
+
+
+<pre class="wp-block-code"><code>export K8S_VERSION=$(curl -sS https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+export ARCH=amd64</code></pre>
+
+
+
+<ol start="3"><li>Download the kubectl command line tool into <code>/usr/bin/kubectl</code> and make it executable:</li></ol>
+
+
+
+<pre class="wp-block-code"><code>curl -sSL "http://storage.googleapis.com/kubernetes-release/release/$K8S_VERSION/bin/linux/$ARCH/kubectl" > /usr/bin/kubectl
+chmod +x /usr/bin/kubectl</code></pre>
+
+
+
+<ol start="4"><li>Now you can run <code>kubectl</code> commands to retrieve information on Kubernetes state:</li></ol>
+
+
+
+<pre class="wp-block-code"><code>kubectl get nodes
+kubectl get pods
+kubectl get namespaces</code></pre>
+
+
+
+<ol start="5"><li>Start deployment of a sample nginx pod and exit the container:</li></ol>
+
+
+
+<pre class="wp-block-code"><code>kubectl run nginx --image=nginx --port=80 ; exit</code></pre>
+
+
+
+<ol start="6"><li>Run the command<em> </em><code>docker</code> <code>ps</code> to see the new nginx containers running on the host.</li><li>Declare the nginx pod deployment as a service and map port 80 of the nginx service to port 8080 on the host:</li></ol>
+
+
+
+<pre class="wp-block-code"><code>docker exec -it hyperkube-installer /bin/bash
+kubectl expose deployment nginx --port=8080 --target-port=80</code></pre>
+
+
+
+<ol start="8"><li>Check that the nginx service is ready and was assigned an IP, and store it in a variable:</li></ol>
+
+
+
+<pre class="wp-block-code"><code>kubectl get service nginx
+ip=$(kubectl get svc nginx --template={{.spec.clusterIP}}</code></pre>
+
+
+
+<ol start="9"><li>Check the nginx welcome page is there via a browser or downloading it with curl:</li></ol>
+
+
+
+<pre class="wp-block-code"><code>curl "http://$ip:8080"</code></pre>
+
+
+
+<p>For further reading, see Kubernetes Documentation: <strong><a href="https://x-team.com/blog/introduction-kubernetes-architecture/" target="_blank" rel="noreferrer noopener">Introduction to Kubernetes Architecture ›</a></strong></p>
+
+
+
+<h2 id="summary">Summary</h2>
+
+
+
+<p>Kubernetes is an orchestration tool for managing distributed services or containerized applications across a distributed cluster of nodes. It was designed for natively supporting (auto-)scaling, high availability, security and portability. Kubernetes itself follows a client-server architecture, with a master node composed of etcd cluster, kube-apiserver, kube-controller-manager, cloud-controller-manager, scheduler. Client (worker) nodes are composed of kube-proxy and kubelet components. Core concepts in Kubernetes include pods (a group of containers deployed together), services (a group of logical pods with a stable IP address) and deployments (a definition of the desired state for a pod or replica set, acted upon by a controller if the current state differs from the desired state), among others.</p>
+
+
+
+<h2 id="top-kubernetes-architecture-tutorials-from-the-community"><strong>Top Kubernetes Architecture Tutorials from the Community</strong></h2>
+
+
+
+<div class="wp-block-columns">
+<div class="wp-block-column">
+<h4><a href="https://www.edureka.co/blog/kubernetes-architecture/" target="_blank" rel="noreferrer noopener"><strong>Understanding Kubernetes Architecture</strong></a></h4>
+
+
+
+<p><strong>Tutorial by:</strong> Edureka</p>
+
+
+
+<p><strong>Length:</strong>&nbsp;Medium</p>
+
+
+
+<p><strong>Can help you learn:</strong>&nbsp;Kubernetes Architecture</p>
+
+
+
+<p><strong>Tutorial steps:</strong></p>
+
+
+
+<ul><li>Kubernetes: An Overview</li><li>Features Of Kubernetes</li><li>Kubernetes Architecture</li><li>Kubernetes Components</li><li>Use Case</li></ul>
+
+
+
+<div class="wp-block-buttons">
+<div class="wp-block-button is-style-outline"><a class="wp-block-button__link" href="https://www.edureka.co/blog/kubernetes-architecture/" target="_blank" rel="noreferrer noopener">Learn More</a></div>
+</div>
+</div>
+
+
+
+<div class="wp-block-column">
+<h4 id="KubernetesArchitecture101-TheIn-DepthKubernetesGuide"><a href="https://blog.5nine.com/kubernetes" target="_blank" rel="noreferrer noopener">The In-Depth Kubernetes Guide</a></h4>
+
+
+
+<p><strong>Tutorial by:</strong> 5nine</p>
+
+
+
+<p><strong>Length:</strong>&nbsp;Long</p>
+
+
+
+<p><strong>Can help you learn:</strong>&nbsp;Everything you need to know, from “What is Kubernetes?” to comparisons, integrations, and more.</p>
+
+
+
+<p><strong>Tutorial Steps:</strong></p>
+
+
+
+<ul><li>Understanding Kubernetes.</li><li>Kubernetes Architecture &amp; Deployment.</li><li>Comparisons Of Kubernetes To Docker &amp; Mesos.</li><li>Integrations Of Kubernetes With AWS &amp; Azure.</li></ul>
+
+
+
+<div class="wp-block-buttons">
+<div class="wp-block-button is-style-outline"><a class="wp-block-button__link" href="https://blog.5nine.com/kubernetes" target="_blank" rel="noreferrer noopener">Learn More</a></div>
+</div>
+</div>
+</div>
+
+
+
+<div class="wp-block-columns">
+<div class="wp-block-column">
+<h4 id="KubernetesArchitecture101-KubernetesTutorial-anIntroductiontotheBasics"><a href="https://www.keycdn.com/blog/kubernetes-tutorial" target="_blank" rel="noreferrer noopener">Kubernetes Tutorial &#8211; an Introduction to the Basics</a></h4>
+
+
+
+<p><strong>Tutorial by:</strong> KeyCDN</p>
+
+
+
+<p><strong>Length:</strong>&nbsp;Long</p>
+
+
+
+<p><strong>Can help you learn:</strong>&nbsp;Set up Kubernetes on a single node on AWS, be able to run stateless and stateful applications, manage the Kubernetes cluster.</p>
+
+
+
+<p><strong>Tutorial Steps:</strong></p>
+
+
+
+<ul><li>The Need for Containerization, the nenefits of Kubernetes.</li><li>Replication Controllers and Sets.</li><li>Creating a Cluster.</li><li>Configuring Kubectl</li><li>The Kubernetes Dashboard</li><li>Creating a Service</li></ul>
+
+
+
+<div class="wp-block-buttons">
+<div class="wp-block-button is-style-outline"><a class="wp-block-button__link" href="https://www.keycdn.com/blog/kubernetes-tutorial" target="_blank" rel="noreferrer noopener">Learn More</a></div>
+</div>
+</div>
+
+
+
+<div class="wp-block-column">
+<h4 id="KubernetesArchitecture101-KubernetesTraining"><a href="https://www.cncf.io/certification/training/" target="_blank" rel="noreferrer noopener">Kubernetes Training</a></h4>
+
+
+
+<p><strong>Tutorial by:</strong> Cloud Native Computing Foundation</p>
+
+
+
+<p><strong>Length:</strong>&nbsp;Long</p>
+
+
+
+<p><strong>Can help you learn:</strong>&nbsp;Kubernetes basics, its architecture, and the problems it helps solves, model of Kubernetes for handling deployments and containerization, Kubernetes concepts like namespaces, replica sets, and deployments.</p>
+
+
+
+<p><strong>Tutorial steps:</strong></p>
+
+
+
+<ul><li>Introduction to Kubernetes, its fundamentals, architecture.</li><li>What are deployments, pods, namespaces, replica sets.</li><li>ConfigMaps, security, and administrative tasks to handle Kubernetes cluster.</li></ul>
+
+
+
+<div class="wp-block-buttons">
+<div class="wp-block-button is-style-outline"><a class="wp-block-button__link" href="https://www.cncf.io/certification/training/" target="_blank" rel="noreferrer noopener">Learn More</a></div>
+</div>
+</div>
+
+
+
+<div class="wp-block-column">
+<h4 id="KubernetesArchitecture101-KubernetesFundamentals"><a href="https://training.linuxfoundation.org/linux-courses/system-administration-training/kubernetes-fundamentals" target="_blank" rel="noreferrer noopener">Kubernetes Fundamentals</a></h4>
+
+
+
+<p><strong>Tutorial by:</strong> The Linux Foundation</p>
+
+
+
+<p><strong>Length:</strong>&nbsp;Medium</p>
+
+
+
+<p><strong>Can help you learn:</strong>&nbsp;Introduction to Kubernetes, its architecture and concepts, how to do deployments in Kubernetes, monitoring and troubleshooting tasks.</p>
+
+
+
+<p><strong>Tutorial steps:</strong></p>
+
+
+
+<ul><li>Fundamentals to setup and configure a Kubernetes cluster.</li><li>Replication controllers, deployments and volume mounting.</li><li>What are services, namespaces, pods, and containers.</li><li>Logging, monitoring, scheduling, federation and security.</li></ul>
+
+
+
+<div class="wp-block-buttons">
+<div class="wp-block-button is-style-outline"><a class="wp-block-button__link" href="https://training.linuxfoundation.org/linux-courses/system-administration-training/kubernetes-fundamentals" target="_blank" rel="noreferrer noopener">Learn More</a></div>
+</div>
+</div>
+</div>
+
+
+
+<h2 id="KubernetesArchitecture101-TopKubernetesArchitectureVideos">Top Kubernetes Architecture Videos</h2>
+
+
+
+<div class="wp-block-columns">
+<div class="wp-block-column">
+<figure class="wp-block-embed-youtube aligncenter wp-block-embed is-type-video is-provider-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
+<iframe loading="lazy" title="Kubernetes Webinar Series - Kubernetes Architecture 101" width="768" height="432" src="about:blank" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-rocket-lazyload="fitvidscompatible" data-lazy-src="https://www.youtube.com/embed/zeS6OyDoy78?feature=oembed"></iframe><noscript><iframe loading="lazy" title="Kubernetes Webinar Series - Kubernetes Architecture 101" width="768" height="432" src="https://www.youtube.com/embed/zeS6OyDoy78?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></noscript>
+</div><figcaption><a href="https://www.youtube.com/watch?v=zeS6OyDoy78" target="_blank" rel="noreferrer noopener"><strong>Kubernetes Architecture</strong></a><br>This video helps understand the functionality of various Kubernetes components like etcd, kube-apiserver, scheduler, controllers, and how they interact with each other. It also gives information about Kubernetes master and nodes and various concepts like labels, namespaces, Replica sets, deployments, pods, and services. It also provides hands on guidance to launch pods in Kubernetes.</figcaption></figure>
+</div>
+
+
+
+<div class="wp-block-column">
+<figure class="wp-block-embed-youtube aligncenter wp-block-embed is-type-video is-provider-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
+<iframe loading="lazy" title="Deep Dive into Architecture" width="768" height="432" src="about:blank" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-rocket-lazyload="fitvidscompatible" data-lazy-src="https://www.youtube.com/embed/p__rV9MfdJs?feature=oembed"></iframe><noscript><iframe loading="lazy" title="Deep Dive into Architecture" width="768" height="432" src="https://www.youtube.com/embed/p__rV9MfdJs?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></noscript>
+</div><figcaption><a href="https://www.youtube.com/watch?v=p__rV9MfdJs" target="_blank" rel="noreferrer noopener"><strong>Deep Dive into Architecture</strong></a><br>This video explains the role of containers in standardization of application development. It explains how containers and Kubernetes make it easy to deploy and ship an application that auto scales and auto heals.</figcaption></figure>
+</div>
+</div>
+						</div>
+					</div>
+				</div>
+			
+			</div><!-- main_content_column -->
+
+			
+			<div class="column is-2-fullhd is-3-widescreen is-12-desktop is-12-tablet sidebar_column">
+				
+				<div class="sidebar_items_wrap fadeInUp animationDelay_4">
+					
+												<div class="sidebar_form_item">
+								<div class="hubspot_form_title">Subscribe to updates</div>
+								<div class="content hubspot_form_wrap">
+									<!--[if lte IE 8]>
+<script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/v2-legacy.js"></script>
+<![endif]-->
+<script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/v2.js"></script>
+<script>
+  hbspt.forms.create({
+	portalId: "1665891",
+	formId: "aba0e0c8-2cea-429b-9bef-12cf0e1d160c"
+});
+</script>								</div>
+							</div><!-- sidebar_form_item -->
+							
+												<div class="sidebar_ad_item">
+							<a href="https://info.aquasec.com/debunking-cloud-native-security-myths?utm_source=CNAcademy&#038;utm_medium=web&#038;utm_campaign=7_Myths_WP" target="_blank"><img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="" data-lazy-src="https://www.aquasec.com/wp-content/uploads/2021/02/CNA-Ad-Debunking-Cloud-Native-Myths.jpg" /><noscript><img src="https://www.aquasec.com/wp-content/uploads/2021/02/CNA-Ad-Debunking-Cloud-Native-Myths.jpg" alt="" /></noscript></a>
+							</div>
+													<div class="sidebar_ad_item">
+							<a href="https://info.aquasec.com/container-security-book" target="_blank"><img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="" data-lazy-src="https://www.aquasec.com/wp-content/uploads/2019/08/CNA-Ad-Oreilly-Container-Security.jpg" /><noscript><img src="https://www.aquasec.com/wp-content/uploads/2019/08/CNA-Ad-Oreilly-Container-Security.jpg" alt="" /></noscript></a>
+							</div>
+													<div class="sidebar_ad_item">
+							<a href="https://info.aquasec.com/kubernetes-security" target="_blank"><img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="" data-lazy-src="https://www.aquasec.com/wp-content/uploads/2019/08/CNA-Ad-Oreilly-K8s-Book.jpg" /><noscript><img src="https://www.aquasec.com/wp-content/uploads/2019/08/CNA-Ad-Oreilly-K8s-Book.jpg" alt="" /></noscript></a>
+							</div>
+						
+				</div><!-- sidebar_items_wrap -->
+			</div><!-- sidebar_column -->
+
+		</div><!-- columns -->
+
+
+		<!-- footer_cta starts -->
+	<div class="footer_cta_wrap animatable">
+		<div class="se*ction">
+			<div class="cont*ainer">
+
+				<div class="columns is-centered is-vcen*tered">
+
+					<div class="column is-3 side_footer_cta side_footer_cta_left fadeInUp animationDelay">
+						<a href="https://cloud.aquasec.com/signup?utm_source=CTA&utm_medium=web&utm_campaign=wave_signup" class="footer_cta_arrow_link" >
+							<div class="side_footer_cta_content">Try Aqua Wave <BR/>The fast track to secure your cloud</div>
+							</a>					</div><!-- side_footer_cta_left -->
+
+					<div class="column is-6 footer_cta">
+
+													<div class="subtitle footer_cta_pretitle fadeInUp animationDelay_1">Need to secure enterprise workloads? </div>
+						
+						<div class="title footer_cta_title fadeInUp">Aqua Enterprise</div>
+
+													<div class="subtitle footer_cta_subtitle fadeInUp animationDelay_1">Go cloud native with the experts!</div>
+						
+						<a href="https://www.aquasec.com/demo" class="button is-info footer_cta_button fadeInUp animationDelay_2" >Get Demo</a>					</div><!-- footer_cta -->
+
+
+					<div class="column is-3 side_footer_cta side_footer_cta_right fadeInUp animationDelay">
+						<a href="https://blog.aquasec.com/" class="footer_cta_arrow_link" >
+							<div class="side_footer_cta_content">Aqua Blog <BR/>All about cloud native <br/>and security</div>
+							</a>					</div><!-- side_footer_cta_right -->
+					
+
+				</div><!-- columns -->
+
+
+			</div><!-- container -->
+
+		</div><!-- section -->
+	</div><!-- footer_cta_wrap -->	
+<!-- footer_cta ends -->
+
+<!-- footer starts -->
+<section class="footer_wrap animatable">
+	<div class="section">
+		
+		<div class="footer_widgets_wrap">
+			<div class="columns is-multiline">
+
+				<div class="column is-12 fadeInUp">
+					<a class="footer_logo" href="https://www.aquasec.com" title="Aqua Security">Aqua Security</a>
+				</div>
+			
+				<div class="column is-4-widescreen is-5-desktop is-10-tablet is-12-mobile footer_1 fadeInUp animationDelay_1">
+					
+					<ul>
+						<div id="text-2" class="widget widget_text">			<div class="textwidget"><p>Aqua Security is the largest pure-play cloud native security company, providing customers the freedom to innovate and run their businesses with minimal friction. The Aqua Cloud Native Security Platform provides prevention, detection, and response automation across the entire application lifecycle to secure the build, secure cloud infrastructure and secure running workloads wherever they are deployed. Aqua customers are among the world’s largest enterprises in financial services, software, media, manufacturing and retail, with implementations across a broad range of cloud providers and modern technology stacks spanning containers, serverless functions, and cloud VMs.</p>
+</div>
+		</div>					</ul>
+
+										
+					<div class="social_links_wrap">
+						<a href="https://www.facebook.com/AquaSecTeam" class="social_link facebook" target="_blank" title="facebook"></a>
+						<a href="https://twitter.com/AquaSecTeam" class="social_link twitter" target="_blank" title="twitter"></a>
+						<a href="https://www.linkedin.com/company/aquasecteam" class="social_link linkedin" target="_blank" title="linkedin"></a>
+						<a href="https://www.youtube.com/channel/UCLstqAtOx2t0xy8YaYMjkWg" class="social_link youtube" target="_blank" title="youtube"></a>
+						<a href="https://github.com/aquasecurity" class="social_link git" target="_blank" title="git"></a>
+											</div>
+
+				</div><!-- column footer_1 -->
+			
+				<div class="column is-7-widescreen is-offset-1-widescreen is-7-desktop is-12-tablet is-12-mobile">
+
+					<div class="columns is-multiline">
+
+						<div class="column is-3-widescreen is-6-desktop is-6-tablet is-12-mobile footer_2 fadeInUp animationDelay_2">
+														<ul>
+								<div id="nav_menu-2" class="widget widget_nav_menu"><div class="widget_title">Use Cases</div><div class="menu-use-cases-container"><ul id="menu-use-cases" class="menu"><li id="menu-item-2029" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2029"><a href="https://www.aquasec.com/use-cases/devops-security/">Automate DevSecOps</a></li>
+<li id="menu-item-2139" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2139"><a href="https://www.aquasec.com/use-cases/cloud-workload-security/">Modernize Security</a></li>
+<li id="menu-item-126" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-126"><a href="https://www.aquasec.com/use-cases/container-auditing-compliance/">Compliance and Auditing</a></li>
+<li id="menu-item-2030" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2030"><a href="https://www.aquasec.com/products/serverless-container-functions/">Serverless Containers &#038; Functions</a></li>
+<li id="menu-item-2031" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2031"><a href="https://www.aquasec.com/use-cases/multi-cloud-and-hybrid-cloud/">Hybrid and Multi Cloud</a></li>
+</ul></div></div><div id="nav_menu-9" class="widget widget_nav_menu"><div class="widget_title">Environments</div><div class="menu-environments-container"><ul id="menu-environments" class="menu"><li id="menu-item-6134" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6134"><a href="https://www.aquasec.com/products/kubernetes-security/">Kubernetes Security</a></li>
+<li id="menu-item-2034" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2034"><a href="https://www.aquasec.com/solutions/red-hat-openshift-container-security/">OpenShift Security</a></li>
+<li id="menu-item-2038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2038"><a href="https://www.aquasec.com/solutions/aws-container-security/">AWS Cloud Security</a></li>
+<li id="menu-item-2032" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2032"><a href="https://www.aquasec.com/solutions/azure-container-security/">Azure Cloud Security</a></li>
+<li id="menu-item-2043" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2043"><a href="https://www.aquasec.com/solutions/google-cloud-kubernetes-security/">Google Cloud Security</a></li>
+<li id="menu-item-5515" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5515"><a href="https://www.aquasec.com/solutions/vmware-tanzu/">Security for VMware Tanzu</a></li>
+<li id="menu-item-2036" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2036"><a href="https://www.aquasec.com/solutions/docker-container-security/">Docker Security</a></li>
+</ul></div></div><div id="nav_menu-4" class="widget widget_nav_menu"><div class="widget_title">Partners</div><div class="menu-partners-container"><ul id="menu-partners" class="menu"><li id="menu-item-133" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-133"><a href="/partners/#technology-alliances">Technology Partners</a></li>
+<li id="menu-item-135" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-135"><a href="/partners/#partner-with-us">Partner With Us</a></li>
+</ul></div></div>							</ul>
+													</div><!-- column footer_2 -->
+						
+						<div class="column  is-3-widescreen is-6-desktop is-6-tablet is-12-mobile footer_3 fadeInUp animationDelay_3">
+														<ul>
+								<div id="nav_menu-3" class="widget widget_nav_menu"><div class="widget_title">Products</div><div class="menu-products-container"><ul id="menu-products" class="menu"><li id="menu-item-5516" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5516"><a href="https://www.aquasec.com/aqua-cloud-native-security-platform/">Cloud Native Security Platform</a></li>
+<li id="menu-item-4511" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4511"><a href="https://www.aquasec.com/products/cspm/">CSPM Cloud Security</a></li>
+<li id="menu-item-5519" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5519"><a href="https://www.aquasec.com/products/container-security/">Container Security</a></li>
+<li id="menu-item-6135" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6135"><a href="https://www.aquasec.com/products/kubernetes-security/">Kubernetes Security</a></li>
+<li id="menu-item-5518" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5518"><a href="https://www.aquasec.com/products/serverless-container-functions/">Serverless Security</a></li>
+<li id="menu-item-5520" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5520"><a href="https://www.aquasec.com/products/cloud-vm-security/">Cloud VM Security</a></li>
+<li id="menu-item-4877" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4877"><a href="https://www.aquasec.com/products/container-analysis/">Dynamic Threat Analysis (DTA)</a></li>
+<li id="menu-item-5517" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5517"><a href="https://www.aquasec.com/products/container-vulnerability-scanning/">Container Vulnerability Scanning</a></li>
+<li id="menu-item-2939" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2939"><a href="https://www.aquasec.com/products/open-source-projects/">Open Source Container Security</a></li>
+<li id="menu-item-2940" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2940"><a href="https://www.aquasec.com/integrations/">Platform Integrations</a></li>
+<li id="menu-item-5776" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5776"><a href="https://www.aquasec.com/pricing/">Aqua Platform Plans &#038; Pricing</a></li>
+</ul></div></div>							</ul>
+													</div><!-- column footer_3 -->
+					
+						<div class="column is-3-widescreen is-6-desktop is-6-tablet is-12-mobile footer_4 fadeInUp animationDelay_4">
+														<ul>
+								<div id="nav_menu-8" class="widget widget_nav_menu"><div class="widget_title">Resources</div><div class="menu-resources-container"><ul id="menu-resources" class="menu"><li id="menu-item-3565" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3565"><a href="https://www.aquasec.com/resources/virtual-container-security-channel/">The Cloud Native Channel</a></li>
+<li id="menu-item-923" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-923"><a href="https://info.aquasec.com/kubernetes-security">O&#8217;Reilly Book: Kubernetes Security</a></li>
+<li id="menu-item-1168" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1168"><a href="https://wiki.aquasec.com">Container Technology Wiki</a></li>
+<li id="menu-item-5820" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5820"><a href="https://www.aquasec.com/research/">Aqua Security Research</a></li>
+<li id="menu-item-7145" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7145"><a href="https://www.aquasec.com/resources/kubernetes-101/">Kubernetes 101</a></li>
+<li id="menu-item-7146" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7146"><a href="https://www.aquasec.com/resources/docker-101/">Docker 101</a></li>
+</ul></div></div><div id="nav_menu-7" class="widget widget_nav_menu"><div class="widget_title">Get in Touch</div><div class="menu-contact-us-container"><ul id="menu-contact-us" class="menu"><li id="menu-item-140" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-140"><a href="https://blog.aquasec.com">Aqua Blog</a></li>
+<li id="menu-item-449" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-449"><a href="https://www.aquasec.com/about-us/contact-us/">Contact Us</a></li>
+<li id="menu-item-1804" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1804"><a href="https://success.aquasec.com/">Success Portal</a></li>
+</ul></div></div>							</ul>
+													</div>
+					
+						<div class="column is-3-widescreen is-6-desktop is-6-tablet is-12-mobile footer_5 fadeInUp animationDelay_5">
+														<ul>
+								<div id="nav_menu-6" class="widget widget_nav_menu"><div class="widget_title">About Us</div><div class="menu-company-container"><ul id="menu-company" class="menu"><li id="menu-item-3194" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3194"><a href="https://www.aquasec.com/about-us/">About Aqua</a></li>
+<li id="menu-item-298" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-298"><a href="https://www.aquasec.com/about-us/news/">Newsroom</a></li>
+<li id="menu-item-130" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-130"><a href="https://www.aquasec.com/about-us/careers/">Careers</a></li>
+<li id="menu-item-4134" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4134"><a href="https://www.aquasec.com/brand/">Brand Guidelines</a></li>
+</ul></div></div>							</ul>
+													</div>
+
+					</div><!-- columns -->
+				</div><!-- column is-7 -->
+
+			</div><!-- columns -->
+
+
+		</div><!-- footer_widgets_wrap -->
+
+		<div class="footer_copyright_wrap fadeInUp animationDelay_6">
+					
+			<div class="columns is-v*centered rev*erse-columns">
+				
+				<div class="column is-12">
+						<div class="footer_copyright">
+							Copyright &copy; 2021 Aqua Security Software Ltd. &nbsp; <a href="/privacy/">Privacy Policy</a> | <a href="/terms-of-use/">Terms of Use</a>
+						</div>
+				</div>
+
+			</div><!-- columns -->
+
+		</div><!-- footer_copyright_wrap -->
+	
+		
+	</div><!-- section -->
+</section>
+
+<!-- footer ends -->
+
+<!-- schema starts -->
+<!-- schema ends -->
+
+<!-- Start of Async HubSpot Analytics Code for WordPress v1.0.0 -->
+<script type="text/javascript">
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "standard-page"]);
+(function(d,s,i,r) {
+  if (d.getElementById(i)){return;}
+  var n = d.createElement(s),e = document.getElementsByTagName(s)[0];
+  n.id=i;n.src = '//js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/1665891.js';
+  e.parentNode.insertBefore(n, e);
+})(document, "script", "hs-analytics", 300000);
+</script>
+<!-- End of Async HubSpot Analytics Code -->
+
+<script>window.lazyLoadOptions = {
+                elements_selector: "img[data-lazy-src],.rocket-lazyload,iframe[data-lazy-src]",
+                data_src: "lazy-src",
+                data_srcset: "lazy-srcset",
+                data_sizes: "lazy-sizes",
+                class_loading: "lazyloading",
+                class_loaded: "lazyloaded",
+                threshold: 300,
+                callback_loaded: function(element) {
+                    if ( element.tagName === "IFRAME" && element.dataset.rocketLazyload == "fitvidscompatible" ) {
+                        if (element.classList.contains("lazyloaded") ) {
+                            if (typeof window.jQuery != "undefined") {
+                                if (jQuery.fn.fitVids) {
+                                    jQuery(element).parent().fitVids();
+                                }
+                            }
+                        }
+                    }
+                }};
+        window.addEventListener('LazyLoad::Initialized', function (e) {
+            var lazyLoadInstance = e.detail.instance;
+
+            if (window.MutationObserver) {
+                var observer = new MutationObserver(function(mutations) {
+                    var image_count = 0;
+                    var iframe_count = 0;
+                    var rocketlazy_count = 0;
+
+                    mutations.forEach(function(mutation) {
+                        for (i = 0; i < mutation.addedNodes.length; i++) {
+                            if (typeof mutation.addedNodes[i].getElementsByTagName !== 'function') {
+                                return;
+                            }
+
+                           if (typeof mutation.addedNodes[i].getElementsByClassName !== 'function') {
+                                return;
+                            }
+
+                            images = mutation.addedNodes[i].getElementsByTagName('img');
+                            is_image = mutation.addedNodes[i].tagName == "IMG";
+                            iframes = mutation.addedNodes[i].getElementsByTagName('iframe');
+                            is_iframe = mutation.addedNodes[i].tagName == "IFRAME";
+                            rocket_lazy = mutation.addedNodes[i].getElementsByClassName('rocket-lazyload');
+
+                            image_count += images.length;
+			                iframe_count += iframes.length;
+			                rocketlazy_count += rocket_lazy.length;
+
+                            if(is_image){
+                                image_count += 1;
+                            }
+
+                            if(is_iframe){
+                                iframe_count += 1;
+                            }
+                        }
+                    } );
+
+                    if(image_count > 0 || iframe_count > 0 || rocketlazy_count > 0){
+                        lazyLoadInstance.update();
+                    }
+                } );
+
+                var b      = document.getElementsByTagName("body")[0];
+                var config = { childList: true, subtree: true };
+
+                observer.observe(b, config);
+            }
+        }, false);</script><script data-no-minify="1" async src="https://www.aquasec.com/wp-content/plugins/rocket-lazy-load/assets/js/16.1/lazyload.min.js"></script>
+</body>
+</html>
+
+	</div><!-- main_content_with_sidebar_wrap -->
+
+
+<script type="text/javascript">
+var $jac1 = jQuery.noConflict();
+$jac1(document).ready(function(){
+	
+	//alert("hi");
+
+	if($jac1(".page_item_has_children").length) {
+
+		$jac1(".sidebar_menu .page_item_has_children.current_page_item, .sidebar_menu .page_item_has_children.current_page_parent, .sidebar_menu .page_item_has_children.current_page_ancestor").addClass('expanded_menu_item');
+		$jac1(".sidebar_menu > li.page_item_has_children").append('<div class="expand_menu_item_btn"></div>');
+
+		$jac1(".expand_menu_item_btn").click(function() {
+			$jac1(this).closest('li.page_item_has_children').toggleClass('expanded_menu_item');
+		});
+
+	} //if page_item_has_children length
+
+	
+	//sidebar menu
+	$jac1('.acd_header_navbar_wrap .navbar-burger.side_navigation_burger').on('click', function() {
+		$jac1(this).toggleClass('is-active');
+		//$jac1('.acd_header_navbar_wrap .navbar-menu').toggleClass('is-active');
+		$jac1('.side_navigation_wrap').toggleClass('is-active');
+		$jac1('html').toggleClass('scroll-disable');
+	});
+
+	
+
+});
+</script>
+
+
+<!-- featured_resources starts -->
+<!-- featured_resources ends -->
+
+
+</div><!-- page -->
+
+<!-- script_box -->
+				
+			
+	
+
+<script>window.lazyLoadOptions = {
+                elements_selector: "img[data-lazy-src],.rocket-lazyload,iframe[data-lazy-src]",
+                data_src: "lazy-src",
+                data_srcset: "lazy-srcset",
+                data_sizes: "lazy-sizes",
+                class_loading: "lazyloading",
+                class_loaded: "lazyloaded",
+                threshold: 300,
+                callback_loaded: function(element) {
+                    if ( element.tagName === "IFRAME" && element.dataset.rocketLazyload == "fitvidscompatible" ) {
+                        if (element.classList.contains("lazyloaded") ) {
+                            if (typeof window.jQuery != "undefined") {
+                                if (jQuery.fn.fitVids) {
+                                    jQuery(element).parent().fitVids();
+                                }
+                            }
+                        }
+                    }
+                }};
+        window.addEventListener('LazyLoad::Initialized', function (e) {
+            var lazyLoadInstance = e.detail.instance;
+
+            if (window.MutationObserver) {
+                var observer = new MutationObserver(function(mutations) {
+                    var image_count = 0;
+                    var iframe_count = 0;
+                    var rocketlazy_count = 0;
+
+                    mutations.forEach(function(mutation) {
+                        for (i = 0; i < mutation.addedNodes.length; i++) {
+                            if (typeof mutation.addedNodes[i].getElementsByTagName !== 'function') {
+                                return;
+                            }
+
+                           if (typeof mutation.addedNodes[i].getElementsByClassName !== 'function') {
+                                return;
+                            }
+
+                            images = mutation.addedNodes[i].getElementsByTagName('img');
+                            is_image = mutation.addedNodes[i].tagName == "IMG";
+                            iframes = mutation.addedNodes[i].getElementsByTagName('iframe');
+                            is_iframe = mutation.addedNodes[i].tagName == "IFRAME";
+                            rocket_lazy = mutation.addedNodes[i].getElementsByClassName('rocket-lazyload');
+
+                            image_count += images.length;
+			                iframe_count += iframes.length;
+			                rocketlazy_count += rocket_lazy.length;
+
+                            if(is_image){
+                                image_count += 1;
+                            }
+
+                            if(is_iframe){
+                                iframe_count += 1;
+                            }
+                        }
+                    } );
+
+                    if(image_count > 0 || iframe_count > 0 || rocketlazy_count > 0){
+                        lazyLoadInstance.update();
+                    }
+                } );
+
+                var b      = document.getElementsByTagName("body")[0];
+                var config = { childList: true, subtree: true };
+
+                observer.observe(b, config);
+            }
+        }, false);</script><script data-no-minify="1" async src="https://www.aquasec.com/wp-content/plugins/rocket-lazy-load/assets/js/16.1/lazyload.min.js"></script></body>
+</html>
